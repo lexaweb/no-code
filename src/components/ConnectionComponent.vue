@@ -3,29 +3,34 @@
         <line
             v-for="(connection, index) in connections"
             :key="index"
-            :x1="getBlockById(connection.from).x + 50"
-            :y1="getBlockById(connection.from).y + 50"
-            :x2="getBlockById(connection.to).x + 50"
-            :y2="getBlockById(connection.to).y + 50"
+            :x1="connection.from.x"
+            :y1="connection.from.y"
+            :x2="connection.to.x"
+            :y2="connection.to.y"
             stroke="black"
             stroke-width="2"
         />
     </svg>
 </template>
 
-<script>
-export default {
-    computed: {
-        connections() {
-            return this.$store.state.connections;
-        },
+<script lang="ts">
+import { defineComponent, computed } from "vue";
+import { useStore } from "vuex";
+
+
+
+export default defineComponent({
+    setup() {
+        const store = useStore();
+
+        // Получаем все соединения из хранилища
+        const connections = computed(() => store.state.connections || []);
+
+        return {
+            connections,
+        };
     },
-    methods: {
-        getBlockById(id) {
-            return this.$store.state.blocks.find(block => block.id === id);
-        },
-    },
-};
+});
 </script>
 
 <style scoped>
@@ -35,6 +40,6 @@ export default {
     left: 0;
     width: 100%;
     height: 100%;
-    pointer-events: none; /* Prevent SVG from blocking interaction */
+    pointer-events: none;
 }
 </style>
